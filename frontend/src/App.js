@@ -80,7 +80,7 @@ function App() {
         label: "Similarity Score",
         data: results.map((item) => item.score),
         backgroundColor: "rgba(0, 198, 255, 0.7)",
-borderRadius: 6,
+        borderRadius: 6,
       },
     ],
   };
@@ -97,10 +97,12 @@ borderRadius: 6,
         color: "white",
       }}
     >
-      <h1 style={{ fontSize: "42px",
-fontWeight: "bold",
-letterSpacing: "1px", 
-marginBottom: "10px" }}>
+      <h1 style={{
+        fontSize: "42px",
+        fontWeight: "bold",
+        letterSpacing: "1px",
+        marginBottom: "10px"
+      }}>
         E-Commerce Intelligence 🔍
       </h1>
 
@@ -172,24 +174,24 @@ marginBottom: "10px" }}>
             >
               {suggestions.map((s, i) => (
                 <div
-  key={i}
-  onClick={() => {
-    setWord(s);
-    setSuggestions([]);
-  }}
-  onMouseEnter={(e) => {
-    e.currentTarget.style.background = "rgba(255,255,255,0.25)";
-  }}
-  onMouseLeave={(e) => {
-    e.currentTarget.style.background = "transparent";
-  }}
-  style={{
-    padding: "10px",
-    cursor: "pointer",
-    borderBottom: "1px solid #eee",
-    transition: "background 0.2s ease",
-  }}
->
+                  key={i}
+                  onClick={() => {
+                    setWord(s);
+                    setSuggestions([]);
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = "rgba(255,255,255,0.25)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = "transparent";
+                  }}
+                  style={{
+                    padding: "10px",
+                    cursor: "pointer",
+                    borderBottom: "1px solid #eee",
+                    transition: "background 0.2s ease",
+                  }}
+                >
                   {s}
                 </div>
               ))}
@@ -266,14 +268,14 @@ marginBottom: "10px" }}>
                   }}
                 >
                   {isTop && (
-  <div style={{
-    fontSize: "12px",
-    fontWeight: "bold",
-    marginBottom: "5px"
-  }}>
-    🥇 BEST MATCH
-  </div>
-)}
+                    <div style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      marginBottom: "5px"
+                    }}>
+                      🥇 BEST MATCH
+                    </div>
+                  )}
                   <h4>{item.word}</h4>
                   <p>{item.score}</p>
                 </div>
@@ -283,36 +285,36 @@ marginBottom: "10px" }}>
 
           <div style={{ width: "700px", height: "300px", margin: "40px auto" }}>
             <Bar
-  data={data}
-  options={{
-  maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        labels: {
-          color: "white",
-        },
-      },
-    },
-    scales: {
-      x: {
-        ticks: {
-          color: "white",
-        },
-        grid: {
-          color: "rgba(255,255,255,0.1)",
-        },
-      },
-      y: {
-        ticks: {
-          color: "white",
-        },
-        grid: {
-          color: "rgba(255,255,255,0.1)",
-        },
-      },
-    },
-  }}
-/>
+              data={data}
+              options={{
+                maintainAspectRatio: false,
+                plugins: {
+                  legend: {
+                    labels: {
+                      color: "white",
+                    },
+                  },
+                },
+                scales: {
+                  x: {
+                    ticks: {
+                      color: "white",
+                    },
+                    grid: {
+                      color: "rgba(255,255,255,0.1)",
+                    },
+                  },
+                  y: {
+                    ticks: {
+                      color: "white",
+                    },
+                    grid: {
+                      color: "rgba(255,255,255,0.1)",
+                    },
+                  },
+                },
+              }}
+            />
           </div>
         </>
       )}
