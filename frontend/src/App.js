@@ -10,15 +10,20 @@ import {
 
 ChartJS.register(BarElement, CategoryScale, LinearScale);
 
+
 function App() {
   const [word, setWord] = useState("");
   const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const fetchSimilarWords = async () => {
     if (!word.trim()) {
       alert("Please enter a word");
       return;
     }
+
+    setLoading(true);
+
     try {
       const res = await axios.get(
         `http://127.0.0.1:5000/similar?word=${word}`
@@ -30,8 +35,9 @@ function App() {
       } else {
         alert("Server error. Please try again.");
       }
-      console.error(err);
     }
+
+    setLoading(false);
   };
 
   const data = {
@@ -40,32 +46,65 @@ function App() {
       {
         label: "Similarity Score",
         data: results.map((item) => item.score),
+        backgroundColor: "rgba(54, 162, 235, 0.6)",
       },
     ],
   };
 
   return (
-    <div style={{ padding: "30px" }}>
-      <h2>E-Commerce Intelligence 🔍</h2>
+    <div style={{
+      padding: "40px",
+      fontFamily: "Arial",
+      textAlign: "center"
+    }}>
+      <h1>E-Commerce Intelligence 🔍</h1>
 
-      <input
-        type="text"
-        placeholder="Try: laptop, shoes, phone"
-        value={word}
-        onChange={(e) => setWord(e.target.value)}
-      />
+      <div style={{ marginBottom: "20px" }}>
+        <p style={{ maxWidth: "600px", margin: "auto" }}>
+          This system uses Skip-Gram Word2Vec embeddings trained on e-commerce data
+          to find semantically similar products using cosine similarity.
+        </p>
+        <input
+          type="text"
+          placeholder="Try: laptop, shoes, phone"
+          value={word}
+          onChange={(e) => setWord(e.target.value)}
+          style={{
+            padding: "10px",
+            width: "250px",
+            marginRight: "10px"
+          }}
+        />
 
-      <button onClick={fetchSimilarWords}>Search</button>
+        <button
+          onClick={fetchSimilarWords}
+          style={{
+            padding: "10px 20px",
+            cursor: "pointer"
+          }}
+        >
+          Search
+        </button>
+      </div>
+      {loading && <p>Loading...</p>}
 
-      <ul>
-        {results.map((item, index) => (
-          <li key={index}>
-            {item.word} — {item.score}
-          </li>
-        ))}
-      </ul>
+      {results.length > 0 && (
+        <>
+          <h3>Top Similar Words</h3>
 
-      {results.length > 0 && <Bar data={data} />}
+          <ul style={{ listStyle: "none", padding: 0 }}>
+            {results.map((item, index) => (
+              <li key={index} style={{ margin: "5px 0" }}>
+                {item.word} — {item.score}
+              </li>
+            ))}
+          </ul>
+
+          <div style={{ width: "500px", margin: "30px auto" }}>
+            <Bar data={data} />
+          </div>
+        </>
+      )}
     </div>
   );
 }
