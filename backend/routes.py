@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify
 
-main = Blueprint('main', __name__)
+main = Blueprint("main", __name__)
 
-@main.route('/')
+@main.route("/")
 def home():
-    return jsonify({"message": "E-commerce Intelligence API running "})
+    return jsonify({"message": "API running successfully!"})
