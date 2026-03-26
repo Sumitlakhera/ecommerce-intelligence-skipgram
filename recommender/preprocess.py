@@ -1,5 +1,28 @@
+from collections import Counter
+
 import pandas as pd
 import re
+from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
+
+
+stop_words = set(stopwords.words("english"))
+CUSTOM_STOPWORDS = {
+    "solid", "super", "nice", "new", "latest",
+    "fashion", "style", "casual", "corporate",
+    "design", "designer", "quality"
+}
+lemmatizer = WordNetLemmatizer()
+
+
+def is_valid_word(word):
+    # remove weird tokens
+    if any(char.isdigit() for char in word):
+        return False
+    if len(word) < 3:
+        return False
+    return True
+
 
 def clean_text(text):
     if pd.isna(text):
@@ -7,46 +30,59 @@ def clean_text(text):
 
     text = str(text).lower()
 
-    # remove special characters
-    text = re.sub(r'[^a-zA-Z\s]', ' ', text)
+    # remove non-alphabet
+    text = re.sub(r'[^a-z\s]', ' ', text)
 
-    # remove extra spaces
-    text = re.sub(r'\s+', ' ', text).strip()
-
-    # remove short/random tokens
     tokens = text.split()
-    tokens = [t for t in tokens if len(t) > 2]
+
+    # remove stopwords + lemmatize
+    tokens = [
+    lemmatizer.lemmatize(word)
+    for word in tokens
+    if word not in stop_words
+    and word not in CUSTOM_STOPWORDS
+    and is_valid_word(word)
+    ]
+    # create bigrams
+    bigrams = [
+    tokens[i] + "_" + tokens[i+1]
+    for i in range(len(tokens)-1)
+    if tokens[i] != tokens[i+1]   # avoid duplicates
+]
+    tokens.extend(bigrams)
 
     return " ".join(tokens)
+
 
 
 def build_corpus(csv_path):
     df = pd.read_csv(csv_path)
 
-    corpus = []
+    raw_corpus = []
 
+    # Step 1: Build raw corpus
     for _, row in df.iterrows():
-        text_parts = []
+        name = clean_text(row.get("product_name", ""))
+        tokens = name.split()
 
-        # product name
-        text_parts.append(clean_text(row.get("product_name", "")))
+        if len(tokens) > 2:
+            raw_corpus.append(tokens)
 
-        # brand
-        text_parts.append(clean_text(row.get("brand", "")))
+    # Step 2: Compute frequency
+    from collections import Counter
 
-        # category
-        text_parts.append(clean_text(row.get("product_category_tree", "")))
+    all_words = [word for sentence in raw_corpus for word in sentence]
+    word_freq = Counter(all_words)
 
-        # description
-        text_parts.append(clean_text(row.get("description", "")))
+    MIN_FREQ = 15  
 
-        # combine all
-        combined_text = " ".join(text_parts)
+    # Step 3: Filter corpus
+    final_corpus = []
 
-        # tokenize
-        tokens = combined_text.split()
+    for sentence in raw_corpus:
+        filtered = [w for w in sentence if word_freq[w] >= MIN_FREQ]
 
-        if len(tokens) > 2:  # ignore very small entries
-            corpus.append(tokens)
+        if len(filtered) > 2:  
+            final_corpus.append(filtered)
 
-    return corpus
+    return final_corpus
