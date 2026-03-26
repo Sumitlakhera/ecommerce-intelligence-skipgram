@@ -15,13 +15,21 @@ function App() {
   const [results, setResults] = useState([]);
 
   const fetchSimilarWords = async () => {
+    if (!word.trim()) {
+      alert("Please enter a word");
+      return;
+    }
     try {
       const res = await axios.get(
         `http://127.0.0.1:5000/similar?word=${word}`
       );
       setResults(res.data.similar_words);
     } catch (err) {
-      alert("Word not found or API error");
+      if (err.response && err.response.data.error) {
+        alert(err.response.data.error);
+      } else {
+        alert("Server error. Please try again.");
+      }
       console.error(err);
     }
   };
@@ -42,7 +50,7 @@ function App() {
 
       <input
         type="text"
-        placeholder="Enter a word (e.g. laptop)"
+        placeholder="Try: laptop, shoes, phone"
         value={word}
         onChange={(e) => setWord(e.target.value)}
       />
