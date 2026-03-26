@@ -37,3 +37,17 @@ def get_similar_words():
         "input_word": word,
         "similar_words": results
     })
+
+@main.route("/suggest", methods=["GET"])
+def suggest_words():
+    prefix = request.args.get("prefix", "").lower()
+
+    if not prefix:
+        return jsonify([])
+
+    suggestions = [
+        word for word in model.wv.index_to_key
+        if word.startswith(prefix)
+    ][:10]
+
+    return jsonify(suggestions)
