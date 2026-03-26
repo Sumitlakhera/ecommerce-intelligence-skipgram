@@ -241,7 +241,7 @@ function App() {
               const isTop = index === 0;
               return (
                 <div
-                  key={index}
+                  key={item.word}
                   onMouseEnter={() => setHoveredIndex(index)}
                   onMouseLeave={() => setHoveredIndex(null)}
                   style={{
