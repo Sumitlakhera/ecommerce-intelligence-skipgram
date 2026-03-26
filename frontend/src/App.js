@@ -79,21 +79,28 @@ function App() {
       {
         label: "Similarity Score",
         data: results.map((item) => item.score),
-        backgroundColor: "rgba(54, 162, 235, 0.6)",
-        size: 100,
+        backgroundColor: "rgba(0, 198, 255, 0.7)",
+borderRadius: 6,
       },
     ],
   };
 
   return (
+
     <div
       style={{
         padding: "40px",
         fontFamily: "Arial",
         textAlign: "center",
+        background: "linear-gradient(135deg, #0f2027, #2c5364, #00c6ff)",
+        minHeight: "100vh",
+        color: "white",
       }}
     >
-      <h1 style={{ fontSize: "36px", marginBottom: "10px" }}>
+      <h1 style={{ fontSize: "42px",
+fontWeight: "bold",
+letterSpacing: "1px", 
+marginBottom: "10px" }}>
         E-Commerce Intelligence 🔍
       </h1>
 
@@ -128,6 +135,7 @@ function App() {
             }}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
+                e.preventDefault();
                 fetchSimilarWords();
               }
             }}
@@ -135,7 +143,10 @@ function App() {
               padding: "12px",
               width: "100%",
               borderRadius: suggestions.length > 0 ? "8px 8px 0 0" : "8px",
-              border: "1px solid #ccc",
+              background: "rgba(255,255,255,0.15)",
+              color: "white",
+              border: "1px solid rgba(255,255,255,0.3)",
+              outline: "none",
               borderBottom:
                 suggestions.length > 0 ? "none" : "1px solid #ccc",
             }}
@@ -148,34 +159,37 @@ function App() {
                 top: "110%",
                 left: 0,
                 width: "108%",
-                background: "#ffffff",
+                background: "rgba(255, 255, 255, 0.15)",
+                backdropFilter: "blur(8px)",
                 border: "1px solid #02adc3",
                 borderTop: "none",
                 borderRadius: "0 0 8px 8px",
                 zIndex: 1000,
                 maxHeight: "200px",
                 overflowY: "auto",
+                color: "white",
               }}
             >
               {suggestions.map((s, i) => (
                 <div
-                  key={i}
-                  onClick={() => {
-                    setWord(s);
-                    setSuggestions([]);
-                  }}
-                  onMouseEnter={(e) =>
-                    (e.target.style.background = "#f5f5f5")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.target.style.background = "#fff")
-                  }
-                  style={{
-                    padding: "10px",
-                    cursor: "pointer",
-                    borderBottom: "1px solid #eee",
-                  }}
-                >
+  key={i}
+  onClick={() => {
+    setWord(s);
+    setSuggestions([]);
+  }}
+  onMouseEnter={(e) => {
+    e.currentTarget.style.background = "rgba(255,255,255,0.25)";
+  }}
+  onMouseLeave={(e) => {
+    e.currentTarget.style.background = "transparent";
+  }}
+  style={{
+    padding: "10px",
+    cursor: "pointer",
+    borderBottom: "1px solid #eee",
+    transition: "background 0.2s ease",
+  }}
+>
                   {s}
                 </div>
               ))}
@@ -185,14 +199,22 @@ function App() {
 
         <button
           onClick={fetchSimilarWords}
+          onMouseEnter={(e) => {
+            e.target.style.transform = "scale(1.05)";
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.transform = "scale(1)";
+          }}
           style={{
             padding: "12px 20px",
-            backgroundColor: "#007bff",
             color: "white",
             border: "none",
             borderRadius: "8px",
             cursor: "pointer",
             height: "37px",
+            background: "linear-gradient(135deg, #00c6ff, #0072ff)",
+            fontWeight: "bold",
+            transition: "all 0.3s ease",
           }}
         >
           Search
@@ -213,36 +235,84 @@ function App() {
               marginTop: "20px",
             }}
           >
-            {results.map((item, index) => (
-              <div
-                key={index}
-                onMouseEnter={() => setHoveredIndex(index)}
-                onMouseLeave={() => setHoveredIndex(null)}
-                style={{
-                  background: "#668ece",
-                  padding: "15px",
-                  margin: "10px",
-                  borderRadius: "10px",
-                  width: "150px",
-                  textAlign: "center",
-                  cursor: "pointer",
-                  transition: "transform 0.3s ease, box-shadow 0.3s ease",
+            {results.map((item, index) => {
+              const isTop = index === 0;
+              return (
+                <div
+                  key={index}
+                  onMouseEnter={() => setHoveredIndex(index)}
+                  onMouseLeave={() => setHoveredIndex(null)}
+                  style={{
+                    background: isTop
+                      ? "linear-gradient(135deg, #FFD700, #FFA500)"
+                      : "rgba(255,255,255,0.1)",
 
-                  transform: hoveredIndex === index ? "translateY(-8px) scale(1.03)" : "translateY(0)",
-                  boxShadow:
-                    hoveredIndex === index
-                      ? "0 12px 24px rgba(0,0,0,0.25)"
-                      : "0 4px 10px rgba(0,0,0,0.1)",
-                }}
-              >
-                <h4>{item.word}</h4>
-                <p>{item.score}</p>
-              </div>
-            ))}
+                    color: isTop ? "#000" : "#fff",
+                    backdropFilter: "blur(10px)",
+                    border: "1px solid rgba(255,255,255,0.2)",
+                    padding: "15px",
+                    margin: "10px",
+                    borderRadius: "10px",
+                    width: "150px",
+                    textAlign: "center",
+                    cursor: "pointer",
+                    transition: "transform 0.3s ease, box-shadow 0.3s ease",
+
+                    transform: hoveredIndex === index ? "translateY(-8px) scale(1.03)" : "translateY(0)",
+                    boxShadow:
+                      hoveredIndex === index
+                        ? "0 12px 24px rgba(0,0,0,0.25)"
+                        : "0 4px 10px rgba(0,0,0,0.1)",
+                  }}
+                >
+                  {isTop && (
+  <div style={{
+    fontSize: "12px",
+    fontWeight: "bold",
+    marginBottom: "5px"
+  }}>
+    🥇 BEST MATCH
+  </div>
+)}
+                  <h4>{item.word}</h4>
+                  <p>{item.score}</p>
+                </div>
+              );
+            })}
           </div>
 
-          <div style={{ width: "500px", margin: "30px auto" }}>
-            <Bar data={data} />
+          <div style={{ width: "700px", height: "300px", margin: "40px auto" }}>
+            <Bar
+  data={data}
+  options={{
+  maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        labels: {
+          color: "white",
+        },
+      },
+    },
+    scales: {
+      x: {
+        ticks: {
+          color: "white",
+        },
+        grid: {
+          color: "rgba(255,255,255,0.1)",
+        },
+      },
+      y: {
+        ticks: {
+          color: "white",
+        },
+        grid: {
+          color: "rgba(255,255,255,0.1)",
+        },
+      },
+    },
+  }}
+/>
           </div>
         </>
       )}
